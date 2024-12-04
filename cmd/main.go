@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// 加载配置
-	cfg, err := config.LoadConfig("config/config.yaml")
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
