@@ -1,0 +1,7 @@
+mqtt:
+  broker: "tcp://mqtt.yingzhu.net:1883"
+  clientId: "device-upgrade-tool"
+  username: "test"
+  password: "test"
+  topics:
+    upgrade: "/device/upgrade"
