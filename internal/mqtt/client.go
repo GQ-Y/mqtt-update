@@ -135,7 +135,7 @@ func (c *Client) Disconnect() {
 	c.client.Disconnect(250)
 }
 
-func (c *Client) SendUpgradeCommand(mac string, version string, url string) error {
+func (c *Client) SendUpgradeCommand(mac string, version string, url string, packageName string) error {
 	// 构建并发送升级命令
 	topic := fmt.Sprintf("/hiot/%s/request_setting", mac)
 	
@@ -156,7 +156,7 @@ func (c *Client) SendUpgradeCommand(mac string, version string, url string) erro
 				CreatedAt:   time.Now().Format("2006-01-02 15:04:05"),
 				DeviceType:  2,
 				Enabled:     true,
-				PackageName: "update.bin",
+				PackageName: packageName,
 			},
 		},
 	}

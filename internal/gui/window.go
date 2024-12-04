@@ -21,6 +21,7 @@ type UpgradeWindow struct {
 	macEntry     *widget.Entry
 	urlEntry     *widget.Entry
 	versionEntry *widget.Entry
+	packageEntry *widget.Entry
 	logText      *widget.Entry
 	statusLabel  *widget.Label
 	mqttStatus   *widget.Label
@@ -47,6 +48,7 @@ func NewUpgradeWindow(cfg *config.Config) *UpgradeWindow {
 		macEntry:      widget.NewEntry(),
 		urlEntry:      widget.NewEntry(),
 		versionEntry:  widget.NewEntry(),
+		packageEntry:  widget.NewEntry(),
 		logText:       logText,
 		statusLabel:   widget.NewLabel("MQTT Status: Not Connected"),
 		mqttStatus:    widget.NewLabel("MQTT: Disconnected"),
@@ -116,9 +118,11 @@ func (w *UpgradeWindow) setupUI() {
 	// Upgrade information input
 	w.urlEntry.SetPlaceHolder("Enter firmware download URL")
 	w.versionEntry.SetPlaceHolder("Enter new version, e.g.: V1.0.0")
+	w.packageEntry.SetPlaceHolder("Enter package name, e.g.: firmware.img")
 	upgradeForm := widget.NewForm(
 		widget.NewFormItem("Firmware URL", w.urlEntry),
 		widget.NewFormItem("Version", w.versionEntry),
+		widget.NewFormItem("Package Name", w.packageEntry),
 	)
 
 	// Button area
@@ -187,9 +191,10 @@ func (w *UpgradeWindow) sendUpgradeCommand() {
 	mac := w.macEntry.Text
 	url := w.urlEntry.Text
 	version := w.versionEntry.Text
+	packageName := w.packageEntry.Text
 
-	if mac == "" || url == "" || version == "" {
-		w.appendLog("Error: MAC address, URL and version cannot be empty")
+	if mac == "" || url == "" || version == "" || packageName == "" {
+		w.appendLog("Error: MAC address, URL, version and package name cannot be empty")
 		return
 	}
 
@@ -198,7 +203,7 @@ func (w *UpgradeWindow) sendUpgradeCommand() {
 	w.setUpgradeStatus("Upgrading...")
 
 	// Send upgrade command
-	err := w.mqttClient.SendUpgradeCommand(mac, version, url)
+	err := w.mqttClient.SendUpgradeCommand(mac, version, url, packageName)
 	if err != nil {
 		w.appendLog(fmt.Sprintf("Failed to send upgrade command: %v", err))
 		w.setUpgradeStatus("Command Failed")
